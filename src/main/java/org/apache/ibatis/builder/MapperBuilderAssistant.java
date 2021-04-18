@@ -138,6 +138,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .properties(props)
         .build();
     configuration.addCache(cache);
+    // 会覆盖cache-ref的配置
     currentCache = cache;
     return cache;
   }
