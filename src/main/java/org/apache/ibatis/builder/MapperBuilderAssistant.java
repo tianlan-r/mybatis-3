@@ -186,12 +186,15 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
     if (extend != null) {
       if (!configuration.hasResultMap(extend)) {
+        // 还未解析extend，标记留待第二次解析
         throw new IncompleteElementException("Could not find a parent resultmap with id '" + extend + "'");
       }
       ResultMap resultMap = configuration.getResultMap(extend);
       List<ResultMapping> extendedResultMappings = new ArrayList<>(resultMap.getResultMappings());
+      // 移除重复的映射
       extendedResultMappings.removeAll(resultMappings);
       // Remove parent constructor if this resultMap declares a constructor.
+      // 如果resultMap有构造器，则移除extend中的构造器
       boolean declaresConstructor = false;
       for (ResultMapping resultMapping : resultMappings) {
         if (resultMapping.getFlags().contains(ResultFlag.CONSTRUCTOR)) {
@@ -398,6 +401,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         }
       }
     } else if (resultType != null) {
+      // 由resultType创建ResultMap
       ResultMap inlineResultMap = new ResultMap.Builder(
           configuration,
           statementId + "-Inline",

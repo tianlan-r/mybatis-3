@@ -195,6 +195,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       try {
         cacheRefResolver.resolveCacheRef();
       } catch (IncompleteElementException e) {
+        // 第一次解析时引用的缓存可能还未解析，这里先标记，等到所有mapper解析完后会进行第二次解析
         configuration.addIncompleteCacheRef(cacheRefResolver);
       }
     }

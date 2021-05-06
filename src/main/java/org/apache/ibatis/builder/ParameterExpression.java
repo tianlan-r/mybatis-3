@@ -70,7 +70,7 @@ public class ParameterExpression extends HashMap<String, String> {
       jdbcTypeOpt(expression, right);
     }
   }
-
+  // 返回第一个非空格字符的位置
   private int skipWS(String expression, int p) {
     for (int i = p; i < expression.length(); i++) {
       if (expression.charAt(i) > 0x20) {
@@ -126,7 +126,7 @@ public class ParameterExpression extends HashMap<String, String> {
       option(expression, right + 1);
     }
   }
-
+  // 去掉首尾
   private String trimmedStr(String str, int start, int end) {
     while (str.charAt(start) <= 0x20) {
       start++;
