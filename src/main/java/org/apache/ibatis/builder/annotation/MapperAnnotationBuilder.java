@@ -112,6 +112,7 @@ public class MapperAnnotationBuilder {
     this.type = type;
   }
 
+  // mapper接口解析
   public void parse() {
     String resource = type.toString();
     if (!configuration.isResourceLoaded(resource)) {
@@ -171,6 +172,7 @@ public class MapperAnnotationBuilder {
         try {
           inputStream = Resources.getResourceAsStream(type.getClassLoader(), xmlResource);
         } catch (IOException e2) {
+          // sql可以写在接口的方法注解上,xml不是必须的
           // ignore, resource is not required
         }
       }
@@ -391,6 +393,7 @@ public class MapperAnnotationBuilder {
     return configuration.getLanguageDriver(langClass);
   }
 
+  // 多个参数返回ParamMap.class,单参数返回实际参数类型
   private Class<?> getParameterType(Method method) {
     Class<?> parameterType = null;
     Class<?>[] parameterTypes = method.getParameterTypes();
