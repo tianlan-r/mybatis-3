@@ -71,6 +71,7 @@ class SqlSessionTest extends BaseDataTest {
 
   @Test
   void shouldResolveBothSimpleNameAndFullyQualifiedName() {
+    // StrictMap添加元素时,除了将原本的key放入map,还会将缩写的key也放入map
     Configuration c = new Configuration();
     final String fullName = "com.mycache.MyCache";
     final String shortName = "MyCache";
@@ -82,6 +83,7 @@ class SqlSessionTest extends BaseDataTest {
 
   @Test
   void shouldFailOverToMostApplicableSimpleName() {
+    // 从StrictMap中取值,不存在时会抛出异常
     Configuration c = new Configuration();
     final String fullName = "com.mycache.MyCache";
     final String invalidName = "unknown.namespace.MyCache";
@@ -93,6 +95,8 @@ class SqlSessionTest extends BaseDataTest {
 
   @Test
   void shouldSucceedWhenFullyQualifiedButFailDueToAmbiguity() {
+    // StrictMap添加两个同样缩写的key时,value会设置为一个Ambiguity对象
+    // get时发现value是Ambiguity对象会抛出异常
     Configuration c = new Configuration();
 
     final String name1 = "com.mycache.MyCache";
@@ -119,6 +123,7 @@ class SqlSessionTest extends BaseDataTest {
 
   @Test
   void shouldFailToAddDueToNameConflict() {
+    // StrictMap添加两个同样的key时会抛出异常
     Configuration c = new Configuration();
     final String fullName = "com.mycache.MyCache";
     final PerpetualCache cache = new PerpetualCache(fullName);

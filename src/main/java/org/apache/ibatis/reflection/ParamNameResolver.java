@@ -54,6 +54,7 @@ public class ParamNameResolver {
 
   private boolean hasParamAnnotation;
 
+  // 有@Param注解取注解的值,没注解取形参的名字
   public ParamNameResolver(Configuration config, Method method) {
     this.useActualParamName = config.isUseActualParamName();
     final Class<?>[] paramTypes = method.getParameterTypes();
@@ -152,6 +153,8 @@ public class ParamNameResolver {
    * @return a {@link ParamMap}
    * @since 3.5.5
    */
+  // 参数是集合或者数组类型,封装成Map返回
+  // 普通类型就直接返回
   public static Object wrapToMapIfCollection(Object object, String actualParamName) {
     if (object instanceof Collection) {
       ParamMap<Object> map = new ParamMap<>();

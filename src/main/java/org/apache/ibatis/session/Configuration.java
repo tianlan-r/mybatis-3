@@ -1008,6 +1008,7 @@ public class Configuration {
 
     @Override
     @SuppressWarnings("unchecked")
+    // key包含".",除了将原本的key放入map,还会将缩写的key也放入map,这两个key对应同一个value
     public V put(String key, V value) {
       if (containsKey(key)) {
         throw new IllegalArgumentException(name + " already contains value for " + key

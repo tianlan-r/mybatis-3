@@ -355,6 +355,9 @@ public class MapperMethod {
       return returnsOptional;
     }
 
+    // 只有一个参数是paramType类型,返回这个参数的索引
+    // 多个参数是paramType类型,抛出异常
+    // 没有参数是paramType类型,返回null
     private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
       Integer index = null;
       final Class<?>[] argTypes = method.getParameterTypes();
