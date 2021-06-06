@@ -423,15 +423,19 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       ancestorObjects.remove(resultMapId);
     } else {
       final ResultLoaderMap lazyLoader = new ResultLoaderMap();
+      // 通过构造器创建对象。如果有内嵌的查询且设置了延迟加载，这里会创建对象的代理
       rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);
       if (rowValue != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
         final MetaObject metaObject = configuration.newMetaObject(rowValue);
         boolean foundValues = this.useConstructorMappings;
+        // 自动映射
         if (shouldApplyAutomaticMappings(resultMap, true)) {
           foundValues = applyAutomaticMappings(rsw, resultMap, metaObject, columnPrefix) || foundValues;
         }
+        // 对<result>标签配置的属性进行映射
         foundValues = applyPropertyMappings(rsw, resultMap, metaObject, lazyLoader, columnPrefix) || foundValues;
         putAncestor(rowValue, resultMapId);
+        // 处理嵌套的resultMap
         foundValues = applyNestedResultMappings(rsw, resultMap, metaObject, columnPrefix, combinedKey, true) || foundValues;
         ancestorObjects.remove(resultMapId);
         foundValues = lazyLoader.size() > 0 || foundValues;
