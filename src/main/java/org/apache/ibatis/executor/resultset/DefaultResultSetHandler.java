@@ -424,7 +424,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     } else {
       // 外层对象不存在
       final ResultLoaderMap lazyLoader = new ResultLoaderMap();
-      // 通过构造器创建对象。如果有内嵌的查询且设置了延迟加载，这里会创建对象的代理
+      // 通过构造器创建外层对象。如果有内嵌的查询且设置了延迟加载，这里会创建对象的代理
       rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);
       if (rowValue != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
         final MetaObject metaObject = configuration.newMetaObject(rowValue);
@@ -443,6 +443,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         rowValue = foundValues || configuration.isReturnInstanceForEmptyRow() ? rowValue : null;
       }
       if (combinedKey != CacheKey.NULL_CACHE_KEY) {
+        // 缓存外层对象
         nestedResultObjects.put(combinedKey, rowValue);
       }
     }
@@ -907,7 +908,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       // issue #577 && #542
       if (mappedStatement.isResultOrdered()) {
         if (partialObject == null && rowValue != null) {
+          // 主对象发生了变化
           nestedResultObjects.clear();
+          // 此时保存的是变化前的对象，即rowValue指向的是上一次的对象
           storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
         }
         rowValue = getRowValue(rsw, discriminatedResultMap, rowKey, null, partialObject);
@@ -1114,6 +1117,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
   }
 
+  // 初始化记录嵌套对象的外层对象的属性
   private Object instantiateCollectionPropertyIfAppropriate(ResultMapping resultMapping, MetaObject metaObject) {
     final String propertyName = resultMapping.getProperty();
     Object propertyValue = metaObject.getValue(propertyName);
