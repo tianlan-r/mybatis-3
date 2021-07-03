@@ -922,6 +922,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       }
     }
     if (rowValue != null && mappedStatement.isResultOrdered() && shouldProcessMoreRows(resultContext, rowBounds)) {
+      // 保存变化后的对象
       storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
       previousRowValue = null;
     } else if (rowValue != null) {
