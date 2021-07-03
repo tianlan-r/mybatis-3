@@ -424,7 +424,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     } else {
       // 外层对象不存在
       final ResultLoaderMap lazyLoader = new ResultLoaderMap();
-      // 创建外层对象
+      // 通过构造器创建对象。如果有内嵌的查询且设置了延迟加载，这里会创建对象的代理
       rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);
       if (rowValue != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
         final MetaObject metaObject = configuration.newMetaObject(rowValue);
@@ -433,8 +433,10 @@ public class DefaultResultSetHandler implements ResultSetHandler {
           // 自动映射的条件:resultMap设置了autoMapping=true，或者configuration的autoMappingBehavior为FULL
           foundValues = applyAutomaticMappings(rsw, resultMap, metaObject, columnPrefix) || foundValues;
         }
+        // 对<result>标签配置的属性进行映射
         foundValues = applyPropertyMappings(rsw, resultMap, metaObject, lazyLoader, columnPrefix) || foundValues;
         putAncestor(rowValue, resultMapId);
+        // 处理嵌套的resultMap
         foundValues = applyNestedResultMappings(rsw, resultMap, metaObject, columnPrefix, combinedKey, true) || foundValues;
         ancestorObjects.remove(resultMapId);
         foundValues = lazyLoader.size() > 0 || foundValues;
@@ -636,7 +638,6 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       final List<ResultMapping> propertyMappings = resultMap.getPropertyResultMappings();
       for (ResultMapping propertyMapping : propertyMappings) {
         // issue gcode #109 && issue #149
-        // 针对嵌套查询并且延迟加载的处理 ==> 返回一个代理对象
         if (propertyMapping.getNestedQueryId() != null && propertyMapping.isLazy()) {
           resultObject = configuration.getProxyFactory().createProxy(resultObject, lazyLoader, configuration, objectFactory, constructorArgTypes, constructorArgs);
           break;
@@ -1014,13 +1015,10 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     final CacheKey cacheKey = new CacheKey();
     cacheKey.update(resultMap.getId());
     List<ResultMapping> resultMappings = getResultMappingsForRowKey(resultMap);
-    // resultMap中没有<id>、<idArg>以及明确声明的resultMapping
     if (resultMappings.isEmpty()) {
       if (Map.class.isAssignableFrom(resultMap.getType())) {
-        // resultMap的结果是Map，则将结果集中的所有列以及当前行的列值作为CacheKey的因子
         createRowKeyForMap(rsw, cacheKey);
       } else {
-        // 如果不是Map，则由结果集中未映射的列名及列值作为因子
         createRowKeyForUnmappedProperties(resultMap, rsw, cacheKey, columnPrefix);
       }
     } else {
@@ -1047,7 +1045,6 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   }
 
   private List<ResultMapping> getResultMappingsForRowKey(ResultMap resultMap) {
-    // 先找<id>和<idArg>节点对应的列，若没有，则找明确声明了的resultMapping，后面会过滤掉其中不简单的resultMapping
     List<ResultMapping> resultMappings = resultMap.getIdResultMappings();
     if (resultMappings.isEmpty()) {
       resultMappings = resultMap.getPropertyResultMappings();

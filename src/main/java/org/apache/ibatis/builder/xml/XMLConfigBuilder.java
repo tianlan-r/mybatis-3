@@ -220,10 +220,14 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  // 解析<properties>节点
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
+      // <property>节点的值
       Properties defaults = context.getChildrenAsProperties();
+      // <properties>节点中resource的值
       String resource = context.getStringAttribute("resource");
+      // <properties>节点中url的值
       String url = context.getStringAttribute("url");
       if (resource != null && url != null) {
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
