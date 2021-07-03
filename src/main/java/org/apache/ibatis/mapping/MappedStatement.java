@@ -41,6 +41,7 @@ public final class MappedStatement {
   private StatementType statementType;
   private ResultSetType resultSetType;
   private SqlSource sqlSource;
+  // 二级缓存,解析mapper时创建,所有sqlsession公用
   private Cache cache;
   private ParameterMap parameterMap;
   private List<ResultMap> resultMaps;

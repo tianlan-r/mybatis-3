@@ -130,6 +130,7 @@ public class ResultMap {
               + resultMap.getType().getName() + "' by arg names " + constructorArgNames
               + ". There might be more info in debug log.");
         }
+        // 根据构造函数中参数的位置进行排序
         resultMap.constructorResultMappings.sort((o1, o2) -> {
           int paramIdx1 = actualArgNames.indexOf(o1.getProperty());
           int paramIdx2 = actualArgNames.indexOf(o2.getProperty());
@@ -145,6 +146,7 @@ public class ResultMap {
       return resultMap;
     }
 
+    // 查找名字和类型匹配的构造函数，并返回构造函数的参数名字
     private List<String> argNamesOfMatchingConstructor(List<String> constructorArgNames) {
       Constructor<?>[] constructors = resultMap.type.getDeclaredConstructors();
       for (Constructor<?> constructor : constructors) {

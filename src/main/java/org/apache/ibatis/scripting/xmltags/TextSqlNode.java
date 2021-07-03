@@ -45,6 +45,7 @@ public class TextSqlNode implements SqlNode {
     return checker.isDynamic();
   }
 
+  // 处理${}符号
   @Override
   public boolean apply(DynamicContext context) {
     GenericTokenParser parser = createParser(new BindingTokenParser(context, injectionFilter));

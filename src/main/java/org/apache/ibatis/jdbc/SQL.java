@@ -18,6 +18,10 @@ package org.apache.ibatis.jdbc;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 构建SQL语句
+ */
 public class SQL extends AbstractSQL<SQL> {
 
   @Override

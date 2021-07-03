@@ -71,8 +71,10 @@ public class PropertyParser {
       return (variables == null) ? defaultValue : variables.getProperty(key, defaultValue);
     }
 
+
     @Override
     public String handleToken(String content) {
+      // 在启用默认值的情况下,Properties里面有就取Properties中的值,没有就取分隔符(:)后的默认值
       if (variables != null) {
         String key = content;
         if (enableDefaultValue) {

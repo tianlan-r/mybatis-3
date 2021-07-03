@@ -66,6 +66,7 @@ public class XMLScriptBuilder extends BaseBuilder {
   public SqlSource parseScriptNode() {
     MixedSqlNode rootSqlNode = parseDynamicTags(context);
     SqlSource sqlSource;
+    // 包含${}或者动态标签则生成DynamicSqlSource,不包含生成则生成RawSqlSource
     if (isDynamic) {
       sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
     } else {
@@ -74,6 +75,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     return sqlSource;
   }
 
+  // 解析动态标签
   protected MixedSqlNode parseDynamicTags(XNode node) {
     List<SqlNode> contents = new ArrayList<>();
     NodeList children = node.getNode().getChildNodes();

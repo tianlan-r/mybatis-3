@@ -35,6 +35,10 @@ import java.util.regex.Pattern;
  *
  * @author Clinton Begin
  */
+
+/**
+ * 执行SQL脚本文件
+ */
 public class ScriptRunner {
 
   private static final String LINE_SEPARATOR = System.lineSeparator();
